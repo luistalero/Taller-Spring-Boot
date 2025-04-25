@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Filtered Products</h2>
+    <ul>
+        <li th:each="product : ${products}" th:text="${product.name} + ' - $' + ${product.price}"></li>
+    </ul>
+    <h3>Estadísticas de los Productos</h3>
+    <ul>
+        <li>Min Price: <span th:text="${minPrice}"></span></li>
+        <li>Max Price: <span th:text="${maxPrice}"></span></li>
+        <li>Average Price: <span th:text="${avgPrice}"></span></li>
+        <li>Total Value: <span th:text="${totalValue}"></span></li>
+        <li>Product Count: <span th:text="${count}"></span></li>
+    </ul>
+    
+    <a href="/">Volver</a>
+</body>
+</html>

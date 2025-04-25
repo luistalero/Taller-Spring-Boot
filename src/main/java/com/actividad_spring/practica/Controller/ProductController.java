@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.actividad_spring.practica.Models.entities.Product;
 import com.actividad_spring.practica.Repository.ProductRepository;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,16 +27,25 @@ public class ProductController {
         @RequestParam(required = false) Double minPrice,
         @RequestParam(required = false) Double maxPrice,
         @RequestParam(required = false) String category,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
         Model model
         ) {
             List<Product> listadoFiltrado = repo.findAll().stream()
             .filter(p -> minPrice == null || p.getPrice() >= minPrice)
             .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
-            .filter(p -> category == null || p.getCategory().equalsIgnoreCase(category))
+            .filter(p -> category == null || category.isEmpty() || p.getCategory().equalsIgnoreCase(category))
             .collect(Collectors.toList());
         model.addAttribute("products", listadoFiltrado);
-        return "index";
+        model.addAttribute("titleFiltro", "Bienvenido a la sección de Filtrado");
+        
+        DoubleSummaryStatistics stats = listadoFiltrado.stream()
+            .collect(Collectors.summarizingDouble(Product::getPrice));
+
+        model.addAttribute("count", stats.getCount());
+        model.addAttribute("avgPrice", stats.getAverage());
+        model.addAttribute("minPrice", stats.getMin());
+        model.addAttribute("maxPrice", stats.getMax());
+        model.addAttribute("totalValue", stats.getSum());
+        
+        return "filter";
     }
 }
